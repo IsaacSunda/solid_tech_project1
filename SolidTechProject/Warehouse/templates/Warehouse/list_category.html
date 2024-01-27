@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    {% load static %}
+    {% block title %}
+        <link rel="stylesheet" href="{% static 'css/list_category.css' %}">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet"
+              integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi"
+              crossorigin="anonymous">
+
+
+    {% endblock %}
+</head>
+<body>
+{% block content %}
+
+    {% load mptt_tags %}
+
+    <div class="list">
+
+        <ul>
+            <li> {{ category.name|title }} ({{ category.get_products.count }}) <a class="a-tag"
+                                                                                  href="{% url 'list' category.pk %}">View</a>
+                <ul>
+                    {% for subcategory in category.children.all %}
+                        <li>{{ subcategory.name|title }} ({{ subcategory.get_products.count }}) <a class="a-tag"
+                                                                                                   href="{% url 'list' subcategory.pk %}">View</a>
+                            {% if subcategory.children.all %}
+                                <ul>
+                                    {% for child in subcategory.children.all %}
+                                        <li>{{ child.name|title }} ({{ child.get_products.count }}) <a class="a-tag"
+                                                                                                       href="{% url 'list' child.pk %}">View</a>
+                                            {% if child.children.all %}
+                                                <ul>
+                                                    {% for descendant in child.children.all %}
+                                                        <li>{{ descendant.name|title }} ({{ descendant.get_products.count }}) <a
+                                                                class="a-tag"
+                                                                href="{% url 'list' descendant.pk %}">View</a>
+                                                        </li>
+                                                    {% endfor %}
+                                                </ul>
+
+                                            {% endif %}
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+
+                            {% endif %}
+                        </li>
+                    {% endfor %}
+                </ul>
+            </li>
+        </ul>
+
+    </div>
+
+
+{% endblock content %}
+</body>
+</html>
+
